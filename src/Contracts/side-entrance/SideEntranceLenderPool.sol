@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.12;
 
-import {Address} from "openzeppelin-contracts/utils/Address.sol";
+import { Address } from "openzeppelin-contracts/utils/Address.sol";
 
 interface IFlashLoanEtherReceiver {
-    function execute() external payable;
+  function execute() external payable;
 }
 
 /**
@@ -12,30 +12,61 @@ interface IFlashLoanEtherReceiver {
  * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
  */
 contract SideEntranceLenderPool {
-    using Address for address payable;
+  using Address for address payable;
 
-    mapping(address => uint256) private balances;
+  mapping(address => uint256) private balances;
 
-    error NotEnoughETHInPool();
-    error FlashLoanHasNotBeenPaidBack();
+  error NotEnoughETHInPool();
+  error FlashLoanHasNotBeenPaidBack();
 
-    function deposit() external payable {
-        balances[msg.sender] += msg.value;
-    }
+  function deposit() external payable {
+    balances[msg.sender] += msg.value;
+  }
 
-    function withdraw() external {
-        uint256 amountToWithdraw = balances[msg.sender];
-        balances[msg.sender] = 0;
-        payable(msg.sender).sendValue(amountToWithdraw);
-    }
+  function withdraw() external {
+    uint256 amountToWithdraw = balances[msg.sender];
+    balances[msg.sender] = 0;
+    payable(msg.sender).sendValue(amountToWithdraw);
+  }
 
-    function flashLoan(uint256 amount) external {
-        uint256 balanceBefore = address(this).balance;
-        if (balanceBefore < amount) revert NotEnoughETHInPool();
+  function flashLoan(uint256 amount) external {
+    uint256 balanceBefore = address(this).balance;
+    if (balanceBefore < amount) revert NotEnoughETHInPool();
 
-        IFlashLoanEtherReceiver(msg.sender).execute{value: amount}();
+    IFlashLoanEtherReceiver(msg.sender).execute{ value: amount }();
 
-        if (address(this).balance < balanceBefore)
-            revert FlashLoanHasNotBeenPaidBack();
-    }
+    if (address(this).balance < balanceBefore)
+      revert FlashLoanHasNotBeenPaidBack();
+  }
+}
+
+contract SideEntranceLenderPoolFixed {
+  using Address for address payable;
+
+  mapping(address => uint256) private balances;
+  uint256 private totalSupply;
+
+  error NotEnoughETHInPool();
+  error FlashLoanHasNotBeenPaidBack();
+
+  function deposit() external payable {
+    balances[msg.sender] += msg.value;
+    totalSupply += msg.value;
+  }
+
+  function withdraw() external {
+    uint256 amountToWithdraw = balances[msg.sender];
+    balances[msg.sender] = 0;
+    totalSupply -= amountToWithdraw;
+    payable(msg.sender).sendValue(amountToWithdraw);
+  }
+
+  function flashLoan(uint256 amount) external {
+    uint256 balanceBefore = totalSupply;
+    if (balanceBefore < amount) revert NotEnoughETHInPool();
+
+    IFlashLoanEtherReceiver(msg.sender).execute{ value: amount }();
+
+    if (totalSupply < balanceBefore) revert FlashLoanHasNotBeenPaidBack();
+  }
 }
