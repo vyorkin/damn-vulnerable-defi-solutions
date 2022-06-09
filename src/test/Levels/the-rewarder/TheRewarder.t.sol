@@ -121,7 +121,8 @@ contract TheRewarder is DSTest {
 
   function testExploit() public {
     /** EXPLOIT START **/
-    vm.warp(block.timestamp + 5 days); // wait for the next round
+    // wait for the next round
+    vm.warp(block.timestamp + 5 days);
     vm.startPrank(attacker);
     Executor executor = new Executor(theRewarderPool, flashLoanerPool);
     executor.borrow();
