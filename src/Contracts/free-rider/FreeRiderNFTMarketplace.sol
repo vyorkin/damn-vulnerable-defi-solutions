@@ -40,6 +40,7 @@ contract FreeRiderNFTMarketplace is ReentrancyGuard {
         }
     }
 
+    // @audit-ok - Nothing interesting.
     function _offerOne(uint256 tokenId, uint256 price) private {
         require(price > 0, "Price must be greater than zero");
 
@@ -61,6 +62,7 @@ contract FreeRiderNFTMarketplace is ReentrancyGuard {
         emit NFTOffered(msg.sender, tokenId, price);
     }
 
+    // @audit - might be vulnerable.
     function buyMany(uint256[] calldata tokenIds)
         external
         payable
@@ -75,6 +77,7 @@ contract FreeRiderNFTMarketplace is ReentrancyGuard {
         uint256 priceToPay = offers[tokenId];
         require(priceToPay > 0, "Token is not being offered");
 
+        // @audit - checks only a single NFT price.
         require(msg.value >= priceToPay, "Amount paid is not enough");
 
         amountOfOffers--;

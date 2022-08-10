@@ -1,26 +1,27 @@
 {
   "editor.formatOnSave": true,
   "solidity.formatter": "prettier",
+  "doki.sticker.path": "/Users/vyorkin/Pictures/cute.gif",
   "[solidity]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "workbench.colorCustomizations": {
-    "activityBar.activeBackground": "#a91779",
-    "activityBar.activeBorder": "#79a817",
-    "activityBar.background": "#a91779",
+    "activityBar.activeBackground": "#ea4362",
+    "activityBar.activeBorder": "#3fe51a",
+    "activityBar.background": "#ea4362",
     "activityBar.foreground": "#e7e7e7",
     "activityBar.inactiveForeground": "#e7e7e799",
-    "activityBarBadge.background": "#79a817",
+    "activityBarBadge.background": "#3fe51a",
     "activityBarBadge.foreground": "#15202b",
-    "statusBar.background": "#7c1159",
+    "statusBar.background": "#e1193e",
     "statusBar.foreground": "#e7e7e7",
-    "statusBarItem.hoverBackground": "#a91779",
-    "statusBarItem.remoteBackground": "#7c1159",
+    "statusBarItem.hoverBackground": "#ea4362",
+    "statusBarItem.remoteBackground": "#e1193e",
     "statusBarItem.remoteForeground": "#e7e7e7",
-    "titleBar.activeBackground": "#7c1159",
+    "titleBar.activeBackground": "#e1193e",
     "titleBar.activeForeground": "#e7e7e7",
-    "titleBar.inactiveBackground": "#7c115999",
+    "titleBar.inactiveBackground": "#e1193e99",
     "titleBar.inactiveForeground": "#e7e7e799"
   },
-  "peacock.color": "#7c1159"
+  "peacock.color": "#e1193e"
 }
