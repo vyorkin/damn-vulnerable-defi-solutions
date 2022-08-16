@@ -1,8 +1,8 @@
-[default]
+[profile.default]
 verbosity = 2
 
 ## set only when the `hardhat` profile is selected
-[hardhat]
+[profile.hardhat]
 src = "contracts"
 out = "artifacts"
 libs = ["node_modules"]

