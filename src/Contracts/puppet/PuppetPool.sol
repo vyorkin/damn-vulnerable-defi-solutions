@@ -5,6 +5,8 @@ import {ReentrancyGuard} from "openzeppelin-contracts/security/ReentrancyGuard.s
 import {Address} from "openzeppelin-contracts/utils/Address.sol";
 import {DamnValuableToken} from "../DamnValuableToken.sol";
 
+import {console} from "../../test/utils/Console.sol";
+
 /**
  * @title PuppetPool
  * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
@@ -34,6 +36,8 @@ contract PuppetPool is ReentrancyGuard {
     function borrow(uint256 borrowAmount) public payable nonReentrant {
         uint256 depositRequired = calculateDepositRequired(borrowAmount);
 
+        console.log("msg.value", msg.value / 1 ether);
+
         if (msg.value < depositRequired) revert NotDepositingEnoughCollateral();
 
         if (msg.value > depositRequired) {
@@ -53,7 +57,10 @@ contract PuppetPool is ReentrancyGuard {
         view
         returns (uint256)
     {
-        return (amount * _computeOraclePrice() * 2) / 10**18;
+        uint256 result = (amount * _computeOraclePrice() * 2) / 10**18;
+
+        console.log("depositRequired", result / 1 ether);
+        return result;
     }
 
     function _computeOraclePrice() private view returns (uint256) {

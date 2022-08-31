@@ -64,7 +64,7 @@ contract SideEntranceLenderPoolFixed {
     function flashLoan(uint256 amount) external {
         uint256 balanceBefore = totalSupply;
         if (balanceBefore < amount) revert NotEnoughETHInPool();
-
+        totalSupply -= amount;
         IFlashLoanEtherReceiver(msg.sender).execute{value: amount}();
 
         if (totalSupply < balanceBefore) revert FlashLoanHasNotBeenPaidBack();

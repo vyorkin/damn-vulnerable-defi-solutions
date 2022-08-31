@@ -48,8 +48,7 @@ contract SideEntrance is DSTest {
 
     function setUp() public {
         utils = new Utilities();
-        address payable[] memory users = utils.createUsers(1);
-        attacker = users[0];
+        attacker = payable(address(1));
         vm.label(attacker, "Attacker");
 
         sideEntranceLenderPool = new SideEntranceLenderPool();
@@ -66,10 +65,12 @@ contract SideEntrance is DSTest {
 
     function testExploit() public {
         /** EXPLOIT START **/
+        console.log("attackers init balance: ", attackerInitialEthBalance);
         vm.startPrank(attacker);
         Exploit expl = new Exploit(sideEntranceLenderPool);
         expl.run();
         vm.stopPrank();
+        console.log("attackers balance: ", address(attacker).balance);
         /** EXPLOIT END **/
         validation();
     }
