@@ -39,34 +39,3 @@ contract SideEntranceLenderPool {
             revert FlashLoanHasNotBeenPaidBack();
     }
 }
-
-contract SideEntranceLenderPoolFixed {
-    using Address for address payable;
-
-    mapping(address => uint256) private balances;
-    uint256 private totalSupply;
-
-    error NotEnoughETHInPool();
-    error FlashLoanHasNotBeenPaidBack();
-
-    function deposit() external payable {
-        balances[msg.sender] += msg.value;
-        totalSupply += msg.value;
-    }
-
-    function withdraw() external {
-        uint256 amountToWithdraw = balances[msg.sender];
-        balances[msg.sender] = 0;
-        totalSupply -= amountToWithdraw;
-        payable(msg.sender).sendValue(amountToWithdraw);
-    }
-
-    function flashLoan(uint256 amount) external {
-        uint256 balanceBefore = totalSupply;
-        if (balanceBefore < amount) revert NotEnoughETHInPool();
-        totalSupply -= amount;
-        IFlashLoanEtherReceiver(msg.sender).execute{value: amount}();
-
-        if (totalSupply < balanceBefore) revert FlashLoanHasNotBeenPaidBack();
-    }
-}

