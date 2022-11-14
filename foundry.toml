@@ -1,5 +1,6 @@
 [profile.default]
 verbosity = 2
+fs_permissions = [{ access = "read", path = "./" }]
 
 ## set only when the `hardhat` profile is selected
 [profile.hardhat]
